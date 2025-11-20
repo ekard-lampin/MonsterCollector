@@ -1,3 +1,3 @@
 v0.0.0-init =======================================================================================
-- TODO: Setup project.
-- TODO: Setup roadmap.
+- Configured project files.
+- Established roadmap.
