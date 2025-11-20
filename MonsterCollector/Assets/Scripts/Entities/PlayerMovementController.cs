@@ -1,0 +1,55 @@
+using UnityEngine;
+
+public class PlayerMovementController : MonoBehaviour
+{
+    [SerializeField]
+    private Vector2Int coords;
+    public void SetCoords(Vector2Int coords) { this.coords = coords; }
+
+    [SerializeField]
+    private bool moving = false;
+    [SerializeField]
+    private float moveTimer = 0;
+    [SerializeField]
+    private GameObject targetTileObject;
+
+    void Update()
+    {
+        HandleMovement();
+    }
+
+    private void HandleMovement()
+    {
+        if (!moving)
+        {
+            if (Vector2Int.zero.Equals(InputManager.instance.GetMovementInput())) { return; }
+
+            Vector2Int targetTile = coords;
+            if (InputManager.instance.GetMovementInput().x < 0) { targetTile.x--; }
+            else if (InputManager.instance.GetMovementInput().x > 0) { targetTile.x++; }
+            else if (InputManager.instance.GetMovementInput().y < 0) { targetTile.y++; }
+            else if (InputManager.instance.GetMovementInput().y > 0) { targetTile.y--; }
+ 
+            if (MapManager.instance.GetTileAtCoords(targetTile) == null) { return; }
+
+            targetTileObject = MapManager.instance.GetTileAtCoords(targetTile);
+            moveTimer = 0;
+            moving = true;
+        }
+        else
+        {
+            moveTimer += Time.deltaTime;
+
+            float moveRatio = Mathf.Clamp(moveTimer / GameManager.instance.GetPlayerMoveSpeed(), 0, 1);
+            transform.position = Vector3.Lerp(MapManager.instance.GetTileAtCoords(coords).transform.position, targetTileObject.transform.position, moveRatio);
+            
+            if (moveTimer < GameManager.instance.GetPlayerMoveSpeed()) { return; }
+            transform.position = targetTileObject.transform.position;
+            coords = targetTileObject.GetComponent<Tile>().GetCoords();
+            
+            moving = false;
+            moveTimer = 0;
+            targetTileObject = null;
+        }
+    }
+}
