@@ -13,6 +13,13 @@ public class MapManager : MonoBehaviour
         return tileLibrary[coords];
     }
 
+    private Dictionary<Vector2Int, Portal> portalLibrary = new Dictionary<Vector2Int, Portal>();
+    public Portal GetPortalAtCoords(Vector2Int coords)
+    {
+        if (!portalLibrary.ContainsKey(coords)) { return null; }
+        return portalLibrary[coords];
+    }
+
     void Start()
     {
         LoadMap("Overworld_0", Vector2Int.zero);
@@ -41,6 +48,18 @@ public class MapManager : MonoBehaviour
                 string[] spawnText = tag[1].Split('/');
                 spawn = new Vector2Int(int.Parse(spawnText[0]), int.Parse(spawnText[1]));
             }
+            else if ("door".Equals(tag[0]))
+            {
+                string[] doorCoordText = tag[1].Split('/');
+                Vector2Int doorCoord = new Vector2Int(int.Parse(doorCoordText[0]), int.Parse(doorCoordText[1]));
+                string doorLocation = tag[2];
+                string[] doorSpawnCoordsText = tag[3].Split('/');
+                Vector2Int doorSpawnCoords = new Vector2Int(int.Parse(doorSpawnCoordsText[0]), int.Parse(doorSpawnCoordsText[1]));
+                Portal newPortal = new Portal();
+                newPortal.SetMapName(doorLocation);
+                newPortal.SetSpawnCoords(doorSpawnCoords);
+                portalLibrary.Add(doorCoord, newPortal);
+            }
         }
 
         // Create map.
@@ -59,9 +78,25 @@ public class MapManager : MonoBehaviour
                 newTileObject.name = "Tile_(" + xIndex + ", " + zIndex + ")";
                 newTileObject.GetComponent<Tile>().SetCoords(new Vector2Int(xIndex, zIndex));
 
-                if ('_'.Equals(mapChar))
+                if ('_'.Equals(mapChar)) // Empty tile
                 {
                     newTileObject.GetComponent<Tile>().SetTileType(TileType.Grass);
+                }
+                else if ('-'.Equals(mapChar)) // Roof
+                {
+                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Building_Roof);
+                }
+                else if ('|'.Equals(mapChar)) // Wall
+                {
+                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Building_Wall);
+                }
+                else if ('O'.Equals(mapChar)) // Door
+                {
+                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Building_Door);
+                }
+                else if ('+'.Equals(mapChar)) // Window
+                {
+                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Building_Window);
                 }
 
                 // Link to existing tiles.
@@ -84,6 +119,11 @@ public class MapManager : MonoBehaviour
                 // Add to tile library.
                 tileLibrary.Add(new Vector2Int(xIndex, zIndex), newTileObject);
             }
+        }
+
+        // Generate structures.
+        foreach (GameObject tile in tileLibrary.Values) {
+            tile.GetComponent<Tile>().GenerateStructure();
         }
 
         // Spawn player.

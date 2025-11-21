@@ -31,6 +31,7 @@ public class PlayerMovementController : MonoBehaviour
             else if (InputManager.instance.GetMovementInput().y > 0) { targetTile.y--; }
  
             if (MapManager.instance.GetTileAtCoords(targetTile) == null) { return; }
+            if (!IsTileWalkable(MapManager.instance.GetTileAtCoords(targetTile).GetComponent<Tile>().GetTileType())) { return; }
 
             targetTileObject = MapManager.instance.GetTileAtCoords(targetTile);
             moveTimer = 0;
@@ -50,6 +51,18 @@ public class PlayerMovementController : MonoBehaviour
             moving = false;
             moveTimer = 0;
             targetTileObject = null;
+
+            // Check for door.
+            if (MapManager.instance.GetPortalAtCoords(coords) == null) { return; }
+            Debug.Log("Entered door to " + MapManager.instance.GetPortalAtCoords(coords).GetMapName());
         }
+    }
+
+    private bool IsTileWalkable(TileType tileType)
+    {
+        if (TileType.Grass.Equals(tileType)) { return true; }
+        if (TileType.Building_Door.Equals(tileType)) { return true; }
+
+        return false;
     }
 }

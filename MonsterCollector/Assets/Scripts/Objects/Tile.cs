@@ -5,6 +5,7 @@ public class Tile : MonoBehaviour
 {
     private TileType tileType = TileType.None;
     public void SetTileType(TileType tileType) { this.tileType = tileType; InitializeMesh(); }
+    public TileType GetTileType() { return tileType; }
     
     private Vector2Int coords;
     public void SetCoords(Vector2Int coords) { this.coords = coords; }
@@ -20,5 +21,338 @@ public class Tile : MonoBehaviour
     private void InitializeMesh()
     {
         transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Textures/grass");
+    }
+
+    public void GenerateStructure() {
+        if (tileType.Equals(TileType.Building_Roof))
+        {
+            // GameObject newStructure = Instantiate(
+            //     Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+            //     transform.position,
+            //     Quaternion.identity
+            // );
+            // SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            // newStructure.transform.SetParent(transform);
+
+            // Vector2Int leftCoord = new Vector2Int(coords.x - 1, coords.y);
+            // Vector2Int rightCoord = new Vector2Int(coords.x + 1, coords.y);
+            // GameObject leftTileObject = MapManager.instance.GetTileAtCoords(leftCoord);
+            // GameObject rightTileObject = MapManager.instance.GetTileAtCoords(rightCoord);
+            // TileType leftType = leftTileObject == null ? TileType.None : leftTileObject.GetComponent<Tile>().GetTileType();
+            // TileType rightType = rightTileObject == null ? TileType.None : rightTileObject.GetComponent<Tile>().GetTileType();
+
+            // // *-- edge left
+            // if (!TileType.Building_Roof.Equals(leftType) && TileType.Building_Roof.Equals(rightType))
+            // {
+            //     sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-corner");
+            // }
+
+            // // --- middle
+            // if (TileType.Building_Roof.Equals(leftType) && TileType.Building_Roof.Equals(rightType))
+            // {
+            //     sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-center");
+            // }
+
+            // // --* edge right
+            // if (TileType.Building_Roof.Equals(leftType) && !TileType.Building_Roof.Equals(rightType))
+            // {
+            //     sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-corner");
+            //     sprite.flipX = true;
+            // }
+
+            GameObject newStructure = Instantiate(
+                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                transform.position,
+                Quaternion.identity
+            );
+            SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            newStructure.transform.SetParent(transform);
+
+            Vector2Int leftCoord = new Vector2Int(coords.x - 1, coords.y);
+            Vector2Int rightCoord = new Vector2Int(coords.x + 1, coords.y);
+            Vector2Int bottomCoord = new Vector2Int(coords.x, coords.y + 1);
+            Vector2Int topCoord = new Vector2Int(coords.x, coords.y - 1);
+            GameObject leftTileObject = MapManager.instance.GetTileAtCoords(leftCoord);
+            GameObject rightTileObject = MapManager.instance.GetTileAtCoords(rightCoord);
+            GameObject bottomTileObject = MapManager.instance.GetTileAtCoords(bottomCoord);
+            GameObject topTileObject = MapManager.instance.GetTileAtCoords(topCoord);
+            TileType leftType = leftTileObject == null ? TileType.None : leftTileObject.GetComponent<Tile>().GetTileType();
+            TileType rightType = rightTileObject == null ? TileType.None : rightTileObject.GetComponent<Tile>().GetTileType();
+            TileType bottomType = bottomTileObject == null ? TileType.None : bottomTileObject.GetComponent<Tile>().GetTileType();
+            TileType topType = topTileObject == null ? TileType.None : topTileObject.GetComponent<Tile>().GetTileType();
+
+            //  *
+            // *--
+            //  *  Roof corner shallow
+            if (!TileType.Building_Roof.Equals(topType)
+                && !TileType.Building_Roof.Equals(leftType)
+                && TileType.Building_Roof.Equals(rightType)
+                && !TileType.Building_Roof.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-corner");
+            }
+            //  *
+            // ---
+            //  *  Roof center shallow
+            else if (!TileType.Building_Roof.Equals(topType)
+                && TileType.Building_Roof.Equals(leftType)
+                && TileType.Building_Roof.Equals(rightType)
+                && !TileType.Building_Roof.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-center");
+            }
+            //  *
+            // --*
+            //  *  Roof corner shallow flipped
+            else if (!TileType.Building_Roof.Equals(topType)
+                && TileType.Building_Roof.Equals(leftType)
+                && !TileType.Building_Roof.Equals(rightType)
+                && !TileType.Building_Roof.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-corner");
+                sprite.flipX = true;
+            }
+            //  *
+            // *--
+            //  -  Roof deep corner rear
+            else if (!TileType.Building_Roof.Equals(topType)
+                && !TileType.Building_Roof.Equals(leftType)
+                && TileType.Building_Roof.Equals(rightType)
+                && TileType.Building_Roof.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-deep-corner-rear");
+            }
+            //  *
+            // ---
+            //  -  Roof deep center rear
+            else if (!TileType.Building_Roof.Equals(topType)
+                && TileType.Building_Roof.Equals(leftType)
+                && TileType.Building_Roof.Equals(rightType)
+                && TileType.Building_Roof.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-deep-center-rear");
+            }
+            //  *
+            // --*
+            //  -  Roof deep corner rear flipped
+            else if (!TileType.Building_Roof.Equals(topType)
+                && TileType.Building_Roof.Equals(leftType)
+                && !TileType.Building_Roof.Equals(rightType)
+                && TileType.Building_Roof.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-deep-corner-rear");
+                sprite.flipX = true;
+            }
+            //  -
+            // *--
+            //  *  Roof deep corner front
+            else if (TileType.Building_Roof.Equals(topType)
+                && !TileType.Building_Roof.Equals(leftType)
+                && TileType.Building_Roof.Equals(rightType)
+                && !TileType.Building_Roof.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-deep-corner-front");
+            }
+            //  -
+            // ---
+            //  *  Roof deep center front
+            else if (TileType.Building_Roof.Equals(topType)
+                && TileType.Building_Roof.Equals(leftType)
+                && TileType.Building_Roof.Equals(rightType)
+                && !TileType.Building_Roof.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-deep-center-front");
+            }
+            //  -
+            // --*
+            //  *  Roof deep corner front flipped
+            else if (TileType.Building_Roof.Equals(topType)
+                && TileType.Building_Roof.Equals(leftType)
+                && !TileType.Building_Roof.Equals(rightType)
+                && !TileType.Building_Roof.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-deep-corner-front");
+                sprite.flipX = true;
+            }
+        }
+        else if (tileType.Equals(TileType.Building_Wall))
+        {
+            GameObject newStructure = Instantiate(
+                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                transform.position,
+                Quaternion.identity
+            );
+            SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            newStructure.transform.SetParent(transform);
+
+            Vector2Int leftCoord = new Vector2Int(coords.x - 1, coords.y);
+            Vector2Int rightCoord = new Vector2Int(coords.x + 1, coords.y);
+            Vector2Int bottomCoord = new Vector2Int(coords.x, coords.y + 1);
+            GameObject leftTileObject = MapManager.instance.GetTileAtCoords(leftCoord);
+            GameObject rightTileObject = MapManager.instance.GetTileAtCoords(rightCoord);
+            GameObject bottomTileObject = MapManager.instance.GetTileAtCoords(bottomCoord);
+            TileType leftType = leftTileObject == null ? TileType.None : leftTileObject.GetComponent<Tile>().GetTileType();
+            TileType rightType = rightTileObject == null ? TileType.None : rightTileObject.GetComponent<Tile>().GetTileType();
+            TileType bottomType = bottomTileObject == null ? TileType.None : bottomTileObject.GetComponent<Tile>().GetTileType();
+
+            // *|B
+            //  *  Corner
+            if (!(TileType.Building_Wall.Equals(leftType) || TileType.Building_Door.Equals(leftType) || TileType.Building_Window.Equals(leftType))
+                && (TileType.Building_Wall.Equals(rightType) || TileType.Building_Door.Equals(rightType) || TileType.Building_Window.Equals(rightType))
+                && !(TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_ground-edge");
+            }
+            // B|B
+            //  *  Bottom edge
+            else if ((TileType.Building_Wall.Equals(leftType) || TileType.Building_Door.Equals(leftType) || TileType.Building_Window.Equals(leftType))
+                && (TileType.Building_Wall.Equals(rightType) || TileType.Building_Door.Equals(rightType) || TileType.Building_Window.Equals(rightType))
+                && !(TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_ground-center");
+            }
+            // B|*
+            //  *  Corner
+            else if ((TileType.Building_Wall.Equals(leftType) || TileType.Building_Door.Equals(leftType) || TileType.Building_Window.Equals(leftType))
+                && !(TileType.Building_Wall.Equals(rightType) || TileType.Building_Door.Equals(rightType) || TileType.Building_Window.Equals(rightType))
+                && !(TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_ground-edge");
+                sprite.flipX = true;
+            }
+            // *|B
+            //  B  Edge
+            else if (!(TileType.Building_Wall.Equals(leftType) || TileType.Building_Door.Equals(leftType) || TileType.Building_Window.Equals(leftType))
+                && (TileType.Building_Wall.Equals(rightType) || TileType.Building_Door.Equals(rightType) || TileType.Building_Window.Equals(rightType))
+                && (TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_wall-edge");
+            }
+            // B|B
+            //  B  Center
+            else if ((TileType.Building_Wall.Equals(leftType) || TileType.Building_Door.Equals(leftType) || TileType.Building_Window.Equals(leftType))
+                && (TileType.Building_Wall.Equals(rightType) || TileType.Building_Door.Equals(rightType) || TileType.Building_Window.Equals(rightType))
+                && (TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_wall-center");
+            }
+            // B|*
+            //  B  Edge
+            else if ((TileType.Building_Wall.Equals(leftType) || TileType.Building_Door.Equals(leftType) || TileType.Building_Window.Equals(leftType))
+                && !(TileType.Building_Wall.Equals(rightType) || TileType.Building_Door.Equals(rightType) || TileType.Building_Window.Equals(rightType))
+                && (TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_wall-edge");
+                sprite.flipX = true;
+            }
+        }
+        else if (tileType.Equals(TileType.Building_Window))
+        {
+            GameObject newStructure = Instantiate(
+                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                transform.position,
+                Quaternion.identity
+            );
+            SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            newStructure.transform.SetParent(transform);
+
+            Vector2Int leftCoord = new Vector2Int(coords.x - 1, coords.y);
+            Vector2Int rightCoord = new Vector2Int(coords.x + 1, coords.y);
+            Vector2Int bottomCoord = new Vector2Int(coords.x, coords.y + 1);
+            GameObject leftTileObject = MapManager.instance.GetTileAtCoords(leftCoord);
+            GameObject rightTileObject = MapManager.instance.GetTileAtCoords(rightCoord);
+            GameObject bottomTileObject = MapManager.instance.GetTileAtCoords(bottomCoord);
+            TileType leftType = leftTileObject == null ? TileType.None : leftTileObject.GetComponent<Tile>().GetTileType();
+            TileType rightType = rightTileObject == null ? TileType.None : rightTileObject.GetComponent<Tile>().GetTileType();
+            TileType bottomType = bottomTileObject == null ? TileType.None : bottomTileObject.GetComponent<Tile>().GetTileType();
+
+            // *|B
+            //  *  Corner
+            if (!(TileType.Building_Wall.Equals(leftType) || TileType.Building_Door.Equals(leftType) || TileType.Building_Window.Equals(leftType))
+                && (TileType.Building_Wall.Equals(rightType) || TileType.Building_Door.Equals(rightType) || TileType.Building_Window.Equals(rightType))
+                && !(TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_window-ground-corner");
+            }
+
+            // B|B
+            //  *  Bottom edge
+            if ((TileType.Building_Wall.Equals(leftType) || TileType.Building_Door.Equals(leftType) || TileType.Building_Window.Equals(leftType))
+                && (TileType.Building_Wall.Equals(rightType) || TileType.Building_Door.Equals(rightType) || TileType.Building_Window.Equals(rightType))
+                && !(TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_window-ground-center");
+            }
+
+            // B|*
+            //  *  Corner
+            if ((TileType.Building_Wall.Equals(leftType) || TileType.Building_Door.Equals(leftType) || TileType.Building_Window.Equals(leftType))
+                && !(TileType.Building_Wall.Equals(rightType) || TileType.Building_Door.Equals(rightType) || TileType.Building_Window.Equals(rightType))
+                && !(TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_window-ground-corner");
+                sprite.flipX = true;
+            }
+
+            // *|B
+            //  B  Edge
+            if (!(TileType.Building_Wall.Equals(leftType) || TileType.Building_Door.Equals(leftType) || TileType.Building_Window.Equals(leftType))
+                && (TileType.Building_Wall.Equals(rightType) || TileType.Building_Door.Equals(rightType) || TileType.Building_Window.Equals(rightType))
+                && (TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_window-edge");
+            }
+
+            // B|B
+            //  B  Center
+            if ((TileType.Building_Wall.Equals(leftType) || TileType.Building_Door.Equals(leftType) || TileType.Building_Window.Equals(leftType))
+                && (TileType.Building_Wall.Equals(rightType) || TileType.Building_Door.Equals(rightType) || TileType.Building_Window.Equals(rightType))
+                && (TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_window-center");
+            }
+
+            // B|*
+            //  B  Edge
+            if ((TileType.Building_Wall.Equals(leftType) || TileType.Building_Door.Equals(leftType) || TileType.Building_Window.Equals(leftType))
+                && !(TileType.Building_Wall.Equals(rightType) || TileType.Building_Door.Equals(rightType) || TileType.Building_Window.Equals(rightType))
+                && (TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/building_window-edge");
+                sprite.flipX = true;
+            }
+        }
+        else if (tileType.Equals(TileType.Building_Door))
+        {
+            GameObject newStructure = Instantiate(
+                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                transform.position,
+                Quaternion.identity
+            );
+            SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            newStructure.transform.SetParent(transform);
+            sprite.sprite = Resources.Load<Sprite>("Textures/building_door");
+        }
     }
 }
