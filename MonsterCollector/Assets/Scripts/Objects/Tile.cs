@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
+    [SerializeField]
     private TileType tileType = TileType.None;
     public void SetTileType(TileType tileType) { this.tileType = tileType; InitializeMesh(); }
     public TileType GetTileType() { return tileType; }
@@ -20,46 +21,35 @@ public class Tile : MonoBehaviour
 
     private void InitializeMesh()
     {
-        transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Textures/grass");
+        if (MapManager.instance.IsLoadedMapBuilding())
+        {
+            transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Textures/interior_floor");
+        }
+        else {
+            transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Textures/grass");
+        }
     }
 
     public void GenerateStructure() {
+        if (MapManager.instance.IsLoadedMapBuilding())
+        {
+            GenerateBuildingStructures();
+        }
+        else
+        {
+            GenerateOverworldStructures();
+        }
+    }
+
+    private void GenerateBuildingStructures()
+    {
+        
+    }
+
+    private void GenerateOverworldStructures()
+    {
         if (tileType.Equals(TileType.Building_Roof))
         {
-            // GameObject newStructure = Instantiate(
-            //     Resources.Load<GameObject>("Prefabs/StructurePrefab"),
-            //     transform.position,
-            //     Quaternion.identity
-            // );
-            // SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
-            // newStructure.transform.SetParent(transform);
-
-            // Vector2Int leftCoord = new Vector2Int(coords.x - 1, coords.y);
-            // Vector2Int rightCoord = new Vector2Int(coords.x + 1, coords.y);
-            // GameObject leftTileObject = MapManager.instance.GetTileAtCoords(leftCoord);
-            // GameObject rightTileObject = MapManager.instance.GetTileAtCoords(rightCoord);
-            // TileType leftType = leftTileObject == null ? TileType.None : leftTileObject.GetComponent<Tile>().GetTileType();
-            // TileType rightType = rightTileObject == null ? TileType.None : rightTileObject.GetComponent<Tile>().GetTileType();
-
-            // // *-- edge left
-            // if (!TileType.Building_Roof.Equals(leftType) && TileType.Building_Roof.Equals(rightType))
-            // {
-            //     sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-corner");
-            // }
-
-            // // --- middle
-            // if (TileType.Building_Roof.Equals(leftType) && TileType.Building_Roof.Equals(rightType))
-            // {
-            //     sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-center");
-            // }
-
-            // // --* edge right
-            // if (TileType.Building_Roof.Equals(leftType) && !TileType.Building_Roof.Equals(rightType))
-            // {
-            //     sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-corner");
-            //     sprite.flipX = true;
-            // }
-
             GameObject newStructure = Instantiate(
                 Resources.Load<GameObject>("Prefabs/StructurePrefab"),
                 transform.position,

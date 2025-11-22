@@ -62,6 +62,10 @@ public class PlayerMovementController : MonoBehaviour
     {
         if (TileType.Grass.Equals(tileType)) { return true; }
         if (TileType.Building_Door.Equals(tileType)) { return true; }
+        if (TileType.Interior_Floor.Equals(tileType)) { return true; }
+        if (TileType.Interior_Door.Equals(tileType)) { return true; }
+        if (TileType.Interior_Stool.Equals(tileType)) { return true; }
+        if (TileType.Interior_Doormat.Equals(tileType)) { return true; }
 
         return false;
     }

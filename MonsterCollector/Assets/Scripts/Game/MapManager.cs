@@ -6,6 +6,9 @@ public class MapManager : MonoBehaviour
     public static MapManager instance;
     void Awake() { instance = this; }
 
+    private string loadedMap;
+    public bool IsLoadedMapBuilding() { return loadedMap.ToLower().Contains("building"); }
+
     private Dictionary<Vector2Int, GameObject> tileLibrary = new Dictionary<Vector2Int, GameObject>();
     public GameObject GetTileAtCoords(Vector2Int coords)
     {
@@ -22,11 +25,14 @@ public class MapManager : MonoBehaviour
 
     void Start()
     {
-        LoadMap("Overworld_0", Vector2Int.zero);
+        // LoadMap("Overworld_0", Vector2Int.zero);
+        LoadMap("Building_0", Vector2Int.zero);
     }
 
     public void LoadMap(string mapName, Vector2Int playerLocation)
     {
+        loadedMap = mapName;
+        
         TextAsset mapText = Resources.Load<TextAsset>("Maps/" + mapName);
         string[] mapLines = mapText.text.Split('\n');
         
@@ -80,7 +86,13 @@ public class MapManager : MonoBehaviour
 
                 if ('_'.Equals(mapChar)) // Empty tile
                 {
-                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Grass);
+                    if (IsLoadedMapBuilding())
+                    {
+                        newTileObject.GetComponent<Tile>().SetTileType(TileType.Interior_Floor);
+                    }
+                    else {
+                        newTileObject.GetComponent<Tile>().SetTileType(TileType.Grass);
+                    }
                 }
                 else if ('-'.Equals(mapChar)) // Roof
                 {
@@ -88,15 +100,47 @@ public class MapManager : MonoBehaviour
                 }
                 else if ('|'.Equals(mapChar)) // Wall
                 {
-                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Building_Wall);
+                    if (IsLoadedMapBuilding())
+                    {
+                        newTileObject.GetComponent<Tile>().SetTileType(TileType.Interior_Wall);
+                    }
+                    else {
+                        newTileObject.GetComponent<Tile>().SetTileType(TileType.Building_Wall);
+                    }
                 }
                 else if ('O'.Equals(mapChar)) // Door
                 {
-                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Building_Door);
+                    if (IsLoadedMapBuilding())
+                    {
+                        newTileObject.GetComponent<Tile>().SetTileType(TileType.Interior_Door);
+                    }
+                    else {
+                        newTileObject.GetComponent<Tile>().SetTileType(TileType.Building_Door);
+                    }
                 }
                 else if ('+'.Equals(mapChar)) // Window
                 {
                     newTileObject.GetComponent<Tile>().SetTileType(TileType.Building_Window);
+                }
+                else if ('='.Equals(mapChar)) // Doormat
+                {
+                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Interior_Doormat);
+                }
+                else if ('B'.Equals(mapChar)) // Bed
+                {
+                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Interior_Bed);
+                }
+                else if ('D'.Equals(mapChar)) // Dresser
+                {
+                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Interior_Dresser);
+                }
+                else if ('S'.Equals(mapChar)) // Stool
+                {
+                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Interior_Stool);
+                }
+                else if ('T'.Equals(mapChar)) // Table
+                {
+                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Interior_Table);
                 }
 
                 // Link to existing tiles.
@@ -130,7 +174,7 @@ public class MapManager : MonoBehaviour
         Vector2Int spawnLocation = Vector2Int.zero.Equals(playerLocation) ? spawn : playerLocation;
         GameObject playerObject = Instantiate(
             Resources.Load<GameObject>("Prefabs/PlayerObject"),
-            new Vector3(spawnLocation.x, 0, spawnLocation.y),
+            new Vector3(spawnLocation.x, 0, spawnLocation.y * -1),
             Quaternion.identity
         );
         playerObject.name = "PlayerObject";

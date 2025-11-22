@@ -5,5 +5,13 @@ public enum TileType
     Building_Roof,
     Building_Wall,
     Building_Window,
-    Building_Door
+    Building_Door,
+    Interior_Floor,
+    Interior_Bed,
+    Interior_Dresser,
+    Interior_Wall,
+    Interior_Stool,
+    Interior_Table,
+    Interior_Doormat,
+    Interior_Door
 }
