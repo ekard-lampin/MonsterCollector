@@ -54,7 +54,9 @@ public class PlayerMovementController : MonoBehaviour
 
             // Check for door.
             if (MapManager.instance.GetPortalAtCoords(coords) == null) { return; }
-            Debug.Log("Entered door to " + MapManager.instance.GetPortalAtCoords(coords).GetMapName());
+            Portal portal = MapManager.instance.GetPortalAtCoords(coords);
+            Debug.Log("Entered door to " + portal.GetMapName());
+            MapManager.instance.LoadMap(portal.GetMapName(), portal.GetSpawnCoords());
         }
     }
 

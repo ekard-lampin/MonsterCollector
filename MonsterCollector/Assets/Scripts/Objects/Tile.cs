@@ -109,7 +109,7 @@ public class Tile : MonoBehaviour
                 && TileType.Interior_Table.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-center-rear");
+                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-corner-rear");
             }
             //  *
             // TT*
@@ -120,7 +120,7 @@ public class Tile : MonoBehaviour
                 && TileType.Interior_Table.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-center-rear");
+                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-corner-rear");
                 sprite.flipX = true;
             }
             //  T
@@ -155,7 +155,31 @@ public class Tile : MonoBehaviour
                 && TileType.Interior_Table.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-center");
+                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-center-rear");
+            }
+            //  T
+            // *TT
+            //  T  Deep side center
+            else if (TileType.Interior_Table.Equals(topType)
+                && !TileType.Interior_Table.Equals(leftType)
+                && TileType.Interior_Table.Equals(rightType)
+                && TileType.Interior_Table.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-center-rear");
+                newStructure.transform.Find("Mesh").localRotation = Quaternion.Euler(newStructure.transform.Find("Mesh").localEulerAngles + new Vector3(0, -90, 0));
+            }
+            //  T
+            // TT*
+            //  T  Deed side center flipped
+            else if (TileType.Interior_Table.Equals(topType)
+                && TileType.Interior_Table.Equals(leftType)
+                && !TileType.Interior_Table.Equals(rightType)
+                && TileType.Interior_Table.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-center-rear");
+                newStructure.transform.Find("Mesh").localRotation = Quaternion.Euler(newStructure.transform.Find("Mesh").localEulerAngles + new Vector3(0, 90, 0));
             }
             //  T
             // TTT
@@ -167,6 +191,17 @@ public class Tile : MonoBehaviour
             )
             {
                 sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-center-front");
+            }
+            //  T
+            // TTT
+            //  T  Deep center
+            else if (TileType.Interior_Table.Equals(topType)
+                && TileType.Interior_Table.Equals(leftType)
+                && TileType.Interior_Table.Equals(rightType)
+                && TileType.Interior_Table.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-center");
             }
             //  *
             // *TT
@@ -237,6 +272,94 @@ public class Tile : MonoBehaviour
 
             spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_dresser-top");
             spriteTop.sortingOrder = 2;
+        }
+        else if (TileType.Interior_Doormat.Equals(tileType))
+        {
+            GameObject newStructure = Instantiate(
+                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                transform.position,
+                Quaternion.identity
+            );
+            SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            newStructure.transform.SetParent(transform);
+
+            Vector2Int leftCoord = new Vector2Int(coords.x - 1, coords.y);
+            Vector2Int rightCoord = new Vector2Int(coords.x + 1, coords.y);
+            GameObject leftTileObject = MapManager.instance.GetTileAtCoords(leftCoord);
+            GameObject rightTileObject = MapManager.instance.GetTileAtCoords(rightCoord);
+            TileType leftType = leftTileObject == null ? TileType.None : leftTileObject.GetComponent<Tile>().GetTileType();
+            TileType rightType = rightTileObject == null ? TileType.None : rightTileObject.GetComponent<Tile>().GetTileType();
+
+            // *== edge
+            if (!TileType.Interior_Doormat.Equals(leftType)
+                && TileType.Interior_Doormat.Equals(rightType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/interior_doormat-edge");
+            }
+            // ==* edge flipped
+            else if (TileType.Interior_Doormat.Equals(leftType)
+                && !TileType.Interior_Doormat.Equals(rightType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/interior_doormat-edge");
+                sprite.flipX = true;
+            }
+            // === middle
+            else if (TileType.Interior_Doormat.Equals(leftType)
+                && TileType.Interior_Doormat.Equals(rightType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/interior_doormat-center");
+            }
+        }
+        else if (TileType.Interior_Door.Equals(tileType))
+        {
+            GameObject newStructure = Instantiate(
+                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                transform.position,
+                Quaternion.identity
+            );
+            SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            newStructure.transform.SetParent(transform);
+
+            sprite.sprite = Resources.Load<Sprite>("Textures/interior_door");
+        }
+        else if (TileType.Interior_Bed.Equals(tileType))
+        {
+            GameObject newStructure = Instantiate(
+                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                transform.position,
+                Quaternion.identity
+            );
+            SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            newStructure.transform.SetParent(transform);
+
+            Vector2Int bottomCoord = new Vector2Int(coords.x, coords.y + 1);
+            Vector2Int topCoord = new Vector2Int(coords.x, coords.y - 1);
+            GameObject bottomTileObject = MapManager.instance.GetTileAtCoords(bottomCoord);
+            GameObject topTileObject = MapManager.instance.GetTileAtCoords(topCoord);
+            TileType bottomType = bottomTileObject == null ? TileType.None : bottomTileObject.GetComponent<Tile>().GetTileType();
+            TileType topType = topTileObject == null ? TileType.None : topTileObject.GetComponent<Tile>().GetTileType();
+
+            // B
+            // B  
+            // * bed bottom
+            if (TileType.Interior_Bed.Equals(topType)
+                && !TileType.Interior_Bed.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/interior_bed-bottom");
+            }
+            // *
+            // B
+            // B bed top
+            else if (!TileType.Interior_Bed.Equals(topType)
+                && TileType.Interior_Bed.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/interior_bed-top");
+            }
         }
     }
 

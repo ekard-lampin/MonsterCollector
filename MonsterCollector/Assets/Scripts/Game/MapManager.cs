@@ -31,6 +31,10 @@ public class MapManager : MonoBehaviour
 
     public void LoadMap(string mapName, Vector2Int playerLocation)
     {
+        foreach (Transform child in GameObject.FindGameObjectWithTag("MapObjects").transform) { Destroy(child.gameObject); }
+        tileLibrary.Clear();
+        portalLibrary.Clear();
+        
         loadedMap = mapName;
         
         TextAsset mapText = Resources.Load<TextAsset>("Maps/" + mapName);
@@ -81,6 +85,7 @@ public class MapManager : MonoBehaviour
                     new Vector3(xIndex, 0, zIndex * -1),
                     Quaternion.identity
                 );
+                newTileObject.transform.SetParent(GameObject.FindGameObjectWithTag("MapObjects").transform);
                 newTileObject.name = "Tile_(" + xIndex + ", " + zIndex + ")";
                 newTileObject.GetComponent<Tile>().SetCoords(new Vector2Int(xIndex, zIndex));
 
@@ -172,12 +177,21 @@ public class MapManager : MonoBehaviour
 
         // Spawn player.
         Vector2Int spawnLocation = Vector2Int.zero.Equals(playerLocation) ? spawn : playerLocation;
-        GameObject playerObject = Instantiate(
-            Resources.Load<GameObject>("Prefabs/PlayerObject"),
-            new Vector3(spawnLocation.x, 0, spawnLocation.y * -1),
-            Quaternion.identity
-        );
-        playerObject.name = "PlayerObject";
-        playerObject.GetComponent<PlayerMovementController>().SetCoords(spawnLocation);
+        if (GameObject.FindGameObjectWithTag("Player") == null)
+        {
+            GameObject playerObject = Instantiate(
+                Resources.Load<GameObject>("Prefabs/PlayerObject"),
+                new Vector3(spawnLocation.x, 0, spawnLocation.y * -1),
+                Quaternion.identity
+            );
+            playerObject.name = "PlayerObject";
+            playerObject.GetComponent<PlayerMovementController>().SetCoords(spawnLocation);
+        }
+        else
+        {
+            GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+            playerObject.transform.position = new Vector3(spawnLocation.x, 0, spawnLocation.y * -1);
+            playerObject.GetComponent<PlayerMovementController>().SetCoords(spawnLocation);
+        }
     }
 }
