@@ -21,21 +21,22 @@ public class Tile : MonoBehaviour
 
     private void InitializeMesh()
     {
-        if (MapManager.instance.IsLoadedMapBuilding())
+        if (MapType.Residential.Equals(MapManager.instance.GetMapType()) && !TileType.None.Equals(tileType))
         {
             transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Textures/interior_floor");
         }
-        else {
+        else if (MapType.Overworld.Equals(MapManager.instance.GetMapType()) && !TileType.None.Equals(tileType))
+        {
             transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Textures/grass");
         }
     }
 
     public void GenerateStructure() {
-        if (MapManager.instance.IsLoadedMapBuilding())
+        if (MapType.Residential.Equals(MapManager.instance.GetMapType()))
         {
             GenerateBuildingStructures();
         }
-        else
+        else if (MapType.Overworld.Equals(MapManager.instance.GetMapType()))
         {
             GenerateOverworldStructures();
         }
@@ -53,18 +54,71 @@ public class Tile : MonoBehaviour
             SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
             newStructure.transform.SetParent(transform);
 
-            sprite.sprite = Resources.Load<Sprite>("Textures/interior_wall-base-full");
+            // sprite.sprite = Resources.Load<Sprite>("Textures/interior_wall-base-full");
 
-            GameObject newStructureTop = Instantiate(
-                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
-                transform.position + new Vector3(0, 0, 1),
-                Quaternion.identity
-            );
-            SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
-            newStructureTop.transform.SetParent(transform);
+            // GameObject newStructureTop = Instantiate(
+            //     Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+            //     transform.position + new Vector3(0, 0, 1),
+            //     Quaternion.identity
+            // );
+            // SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            // newStructureTop.transform.SetParent(transform);
 
-            spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_wall-top-full");
-            spriteTop.sortingOrder = 2;
+            // spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_wall-top-full");
+            // spriteTop.sortingOrder = 2;
+
+            Vector2Int leftCoord = new Vector2Int(coords.x - 1, coords.y);
+            Vector2Int rightCoord = new Vector2Int(coords.x + 1, coords.y);
+            Vector2Int bottomCoord = new Vector2Int(coords.x, coords.y + 1);
+            Vector2Int topCoord = new Vector2Int(coords.x, coords.y - 1);
+            GameObject leftTileObject = MapManager.instance.GetTileAtCoords(leftCoord);
+            GameObject rightTileObject = MapManager.instance.GetTileAtCoords(rightCoord);
+            GameObject bottomTileObject = MapManager.instance.GetTileAtCoords(bottomCoord);
+            GameObject topTileObject = MapManager.instance.GetTileAtCoords(topCoord);
+            TileType leftType = leftTileObject == null ? TileType.None : leftTileObject.GetComponent<Tile>().GetTileType();
+            TileType rightType = rightTileObject == null ? TileType.None : rightTileObject.GetComponent<Tile>().GetTileType();
+            TileType bottomType = bottomTileObject == null ? TileType.None : bottomTileObject.GetComponent<Tile>().GetTileType();
+            TileType topType = topTileObject == null ? TileType.None : topTileObject.GetComponent<Tile>().GetTileType();
+
+            // |
+            // |  Wall top
+            if (TileType.Interior_Wall.Equals(bottomType))
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/interior_wall-top-full");
+            }
+            else
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/interior_wall-base-full");
+
+                if (!TileType.None.Equals(topType))
+                {
+                    GameObject newStructureTop = Instantiate(
+                        Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                        transform.position + new Vector3(0, 0, 1),
+                        Quaternion.identity
+                    );
+                    SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+                    newStructureTop.transform.SetParent(transform);
+
+                    spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_wall-top-short");
+                    spriteTop.sortingOrder = 2;
+                }
+            }
+
+            // Add wall tops to the top of the map.
+            if (TileType.None.Equals(topType))
+            {
+                GameObject newStructureTop = Instantiate(
+                    Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                    transform.position + new Vector3(0, 0, 1),
+                    Quaternion.identity
+                );
+                SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+                newStructureTop.transform.SetParent(transform);
+
+                spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_wall-top-full");
+                spriteTop.sortingOrder = 2;
+            }
         }
         else if (TileType.Interior_Table.Equals(tileType))
         {
@@ -360,6 +414,52 @@ public class Tile : MonoBehaviour
             {
                 sprite.sprite = Resources.Load<Sprite>("Textures/interior_bed-top");
             }
+        }
+        else if (TileType.Interior_Cabinet.Equals(tileType))
+        {
+            GameObject newStructure = Instantiate(
+                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                transform.position,
+                Quaternion.identity
+            );
+            SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            newStructure.transform.SetParent(transform);
+
+            sprite.sprite = Resources.Load<Sprite>("Textures/interior_cabinet-base");
+
+            GameObject newStructureTop = Instantiate(
+                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                transform.position + new Vector3(0, 0, 1),
+                Quaternion.identity
+            );
+            SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            newStructureTop.transform.SetParent(transform);
+
+            spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_cabinet-top");
+            spriteTop.sortingOrder = 2;
+        }
+        else if (TileType.Interior_Sink.Equals(tileType))
+        {
+            GameObject newStructure = Instantiate(
+                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                transform.position,
+                Quaternion.identity
+            );
+            SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            newStructure.transform.SetParent(transform);
+
+            sprite.sprite = Resources.Load<Sprite>("Textures/interior_sink");
+
+            GameObject newStructureTop = Instantiate(
+                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                transform.position + new Vector3(0, 0, 1),
+                Quaternion.identity
+            );
+            SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            newStructureTop.transform.SetParent(transform);
+
+            spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_cabinet-top");
+            spriteTop.sortingOrder = 2;
         }
     }
 

@@ -13,5 +13,7 @@ public enum TileType
     Interior_Stool,
     Interior_Table,
     Interior_Doormat,
-    Interior_Door
+    Interior_Door,
+    Interior_Cabinet,
+    Interior_Sink
 }

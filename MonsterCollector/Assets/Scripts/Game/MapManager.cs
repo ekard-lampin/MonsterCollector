@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,8 +7,9 @@ public class MapManager : MonoBehaviour
     public static MapManager instance;
     void Awake() { instance = this; }
 
-    private string loadedMap;
-    public bool IsLoadedMapBuilding() { return loadedMap.ToLower().Contains("building"); }
+    private MapType mapType = MapType.None;
+    public MapType GetMapType() { return mapType; }
+    public void SetMapType(MapType mapType) { this.mapType = mapType; }
 
     private Dictionary<Vector2Int, GameObject> tileLibrary = new Dictionary<Vector2Int, GameObject>();
     public GameObject GetTileAtCoords(Vector2Int coords)
@@ -26,7 +28,8 @@ public class MapManager : MonoBehaviour
     void Start()
     {
         // LoadMap("Overworld_0", Vector2Int.zero);
-        LoadMap("Building_0", Vector2Int.zero);
+        // LoadMap("Building_0", Vector2Int.zero);
+        LoadMap("Building_1", Vector2Int.zero);
     }
 
     public void LoadMap(string mapName, Vector2Int playerLocation)
@@ -34,8 +37,6 @@ public class MapManager : MonoBehaviour
         foreach (Transform child in GameObject.FindGameObjectWithTag("MapObjects").transform) { Destroy(child.gameObject); }
         tileLibrary.Clear();
         portalLibrary.Clear();
-        
-        loadedMap = mapName;
         
         TextAsset mapText = Resources.Load<TextAsset>("Maps/" + mapName);
         string[] mapLines = mapText.text.Split('\n');
@@ -70,6 +71,11 @@ public class MapManager : MonoBehaviour
                 newPortal.SetSpawnCoords(doorSpawnCoords);
                 portalLibrary.Add(doorCoord, newPortal);
             }
+            else if ("type".Equals(tag[0]))
+            {
+                MapType loadedMapType = (MapType)Enum.Parse(typeof(MapType), tag[1]);
+                SetMapType(loadedMapType);
+            }
         }
 
         // Create map.
@@ -89,64 +95,77 @@ public class MapManager : MonoBehaviour
                 newTileObject.name = "Tile_(" + xIndex + ", " + zIndex + ")";
                 newTileObject.GetComponent<Tile>().SetCoords(new Vector2Int(xIndex, zIndex));
 
+                TileType newType = TileType.None;
                 if ('_'.Equals(mapChar)) // Empty tile
                 {
-                    if (IsLoadedMapBuilding())
+                    if (MapType.Residential.Equals(GetMapType()))
                     {
-                        newTileObject.GetComponent<Tile>().SetTileType(TileType.Interior_Floor);
+                        newType = TileType.Interior_Floor;
                     }
-                    else {
-                        newTileObject.GetComponent<Tile>().SetTileType(TileType.Grass);
+                    else if (MapType.Overworld.Equals(GetMapType()))
+                    {
+                        newType = TileType.Grass;
                     }
                 }
                 else if ('-'.Equals(mapChar)) // Roof
                 {
-                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Building_Roof);
+                    newType = TileType.Building_Roof;
                 }
                 else if ('|'.Equals(mapChar)) // Wall
                 {
-                    if (IsLoadedMapBuilding())
+                    if (MapType.Residential.Equals(GetMapType()))
                     {
-                        newTileObject.GetComponent<Tile>().SetTileType(TileType.Interior_Wall);
+                        newType = TileType.Interior_Wall;
                     }
-                    else {
-                        newTileObject.GetComponent<Tile>().SetTileType(TileType.Building_Wall);
+                    else if (MapType.Overworld.Equals(GetMapType()))
+                    {
+                        newType = TileType.Building_Wall;
                     }
                 }
                 else if ('O'.Equals(mapChar)) // Door
                 {
-                    if (IsLoadedMapBuilding())
+                    if (MapType.Residential.Equals(GetMapType()))
                     {
-                        newTileObject.GetComponent<Tile>().SetTileType(TileType.Interior_Door);
+                        newType = TileType.Interior_Door;
                     }
-                    else {
-                        newTileObject.GetComponent<Tile>().SetTileType(TileType.Building_Door);
+                    else if (MapType.Overworld.Equals(GetMapType()))
+                    {
+                        newType = TileType.Building_Door;
                     }
                 }
                 else if ('+'.Equals(mapChar)) // Window
                 {
-                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Building_Window);
+                    newType = TileType.Building_Window;
                 }
                 else if ('='.Equals(mapChar)) // Doormat
                 {
-                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Interior_Doormat);
+                    newType = TileType.Interior_Doormat;
                 }
                 else if ('B'.Equals(mapChar)) // Bed
                 {
-                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Interior_Bed);
+                    newType = TileType.Interior_Bed;
                 }
                 else if ('D'.Equals(mapChar)) // Dresser
                 {
-                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Interior_Dresser);
+                    newType = TileType.Interior_Dresser;
                 }
                 else if ('S'.Equals(mapChar)) // Stool
                 {
-                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Interior_Stool);
+                    newType = TileType.Interior_Stool;
                 }
                 else if ('T'.Equals(mapChar)) // Table
                 {
-                    newTileObject.GetComponent<Tile>().SetTileType(TileType.Interior_Table);
+                    newType = TileType.Interior_Table;
                 }
+                else if ('C'.Equals(mapChar)) // Cabinet
+                {
+                    newType = TileType.Interior_Cabinet;
+                }
+                else if ('U'.Equals(mapChar)) // Sink
+                {
+                    newType = TileType.Interior_Sink;
+                }
+                newTileObject.GetComponent<Tile>().SetTileType(newType);
 
                 // Link to existing tiles.
                 Vector2Int checkTile = new Vector2Int(xIndex, zIndex - 1);
