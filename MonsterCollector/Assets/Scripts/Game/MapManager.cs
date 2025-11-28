@@ -135,7 +135,14 @@ public class MapManager : MonoBehaviour
                 }
                 else if ('+'.Equals(mapChar)) // Window
                 {
-                    newType = TileType.Building_Window;
+                    if (MapType.Residential.Equals(GetMapType()))
+                    {
+                        newType = TileType.Interior_Oven;
+                    }
+                    else if (MapType.Overworld.Equals(GetMapType()))
+                    {
+                        newType = TileType.Building_Window;
+                    }
                 }
                 else if ('='.Equals(mapChar)) // Doormat
                 {
@@ -164,6 +171,10 @@ public class MapManager : MonoBehaviour
                 else if ('U'.Equals(mapChar)) // Sink
                 {
                     newType = TileType.Interior_Sink;
+                }
+                else if ('F'.Equals(mapChar)) // Fridge
+                {
+                    newType = TileType.Interior_Fridge;
                 }
                 newTileObject.GetComponent<Tile>().SetTileType(newType);
 

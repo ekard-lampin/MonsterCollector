@@ -15,5 +15,7 @@ public enum TileType
     Interior_Doormat,
     Interior_Door,
     Interior_Cabinet,
-    Interior_Sink
+    Interior_Sink,
+    Interior_Oven,
+    Interior_Fridge
 }

@@ -116,7 +116,7 @@ public class Tile : MonoBehaviour
                 SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
                 newStructureTop.transform.SetParent(transform);
 
-                spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_wall-top-full");
+                spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_wall-top-short");
                 spriteTop.sortingOrder = 2;
             }
         }
@@ -459,6 +459,52 @@ public class Tile : MonoBehaviour
             newStructureTop.transform.SetParent(transform);
 
             spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_cabinet-top");
+            spriteTop.sortingOrder = 2;
+        }
+        else if (TileType.Interior_Oven.Equals(tileType))
+        {
+            GameObject newStructure = Instantiate(
+                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                transform.position,
+                Quaternion.identity
+            );
+            SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            newStructure.transform.SetParent(transform);
+
+            sprite.sprite = Resources.Load<Sprite>("Textures/interior_oven-base");
+
+            GameObject newStructureTop = Instantiate(
+                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                transform.position + new Vector3(0, 0, 1),
+                Quaternion.identity
+            );
+            SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            newStructureTop.transform.SetParent(transform);
+
+            spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_oven-top");
+            spriteTop.sortingOrder = 2;
+        }
+        else if (TileType.Interior_Fridge.Equals(tileType))
+        {
+            GameObject newStructure = Instantiate(
+                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                transform.position,
+                Quaternion.identity
+            );
+            SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            newStructure.transform.SetParent(transform);
+
+            sprite.sprite = Resources.Load<Sprite>("Textures/interior_fridge-base");
+
+            GameObject newStructureTop = Instantiate(
+                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                transform.position + new Vector3(0, 0, 1),
+                Quaternion.identity
+            );
+            SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            newStructureTop.transform.SetParent(transform);
+
+            spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_fridge-top");
             spriteTop.sortingOrder = 2;
         }
     }
