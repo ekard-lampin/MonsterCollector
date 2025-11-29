@@ -7,6 +7,11 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     void Awake() { instance = this; }
 
+    [Header("Game Settings")]
+    [SerializeField]
+    private ColorVersion colorVersion = ColorVersion.None;
+    public ColorVersion GetColorVersion() { return colorVersion; }
+
     [Header("Player Settings")]
     [SerializeField]
     private float playerMoveSpeed;

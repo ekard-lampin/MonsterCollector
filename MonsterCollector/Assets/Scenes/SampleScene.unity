@@ -180,6 +180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14b828f201bd37144843f92a2be6d6d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  colorVersion: 3
   playerMoveSpeed: 0.33333334
 --- !u!114 &400803933
 MonoBehaviour:

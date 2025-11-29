@@ -21,13 +21,14 @@ public class Tile : MonoBehaviour
 
     private void InitializeMesh()
     {
+        string colorVersion = GameManager.instance.GetColorVersion().ToString();
         if (MapType.Residential.Equals(MapManager.instance.GetMapType()) && !TileType.None.Equals(tileType))
         {
-            transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Textures/interior_floor");
+            transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_floor");
         }
         else if (MapType.Overworld.Equals(MapManager.instance.GetMapType()) && !TileType.None.Equals(tileType))
         {
-            transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Textures/grass");
+            transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/grass");
         }
     }
 
@@ -44,6 +45,7 @@ public class Tile : MonoBehaviour
 
     private void GenerateBuildingStructures()
     {
+        string colorVersion = GameManager.instance.GetColorVersion().ToString();
         if (TileType.Interior_Wall.Equals(tileType))
         {
             GameObject newStructure = Instantiate(
@@ -54,7 +56,7 @@ public class Tile : MonoBehaviour
             SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
             newStructure.transform.SetParent(transform);
 
-            // sprite.sprite = Resources.Load<Sprite>("Textures/interior_wall-base-full");
+            // sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_wall-base-full");
 
             // GameObject newStructureTop = Instantiate(
             //     Resources.Load<GameObject>("Prefabs/StructurePrefab"),
@@ -64,7 +66,7 @@ public class Tile : MonoBehaviour
             // SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
             // newStructureTop.transform.SetParent(transform);
 
-            // spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_wall-top-full");
+            // spriteTop.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_wall-top-full");
             // spriteTop.sortingOrder = 2;
 
             Vector2Int leftCoord = new Vector2Int(coords.x - 1, coords.y);
@@ -84,11 +86,11 @@ public class Tile : MonoBehaviour
             // |  Wall top
             if (TileType.Interior_Wall.Equals(bottomType))
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_wall-top-full");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_wall-top-full");
             }
             else
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_wall-base-full");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_wall-base-full");
 
                 if (!TileType.None.Equals(topType))
                 {
@@ -100,7 +102,7 @@ public class Tile : MonoBehaviour
                     SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
                     newStructureTop.transform.SetParent(transform);
 
-                    spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_wall-top-short");
+                    spriteTop.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_wall-top-short");
                     spriteTop.sortingOrder = 2;
                 }
             }
@@ -116,7 +118,7 @@ public class Tile : MonoBehaviour
                 SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
                 newStructureTop.transform.SetParent(transform);
 
-                spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_wall-top-short");
+                spriteTop.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_wall-top-short");
                 spriteTop.sortingOrder = 2;
             }
         }
@@ -152,7 +154,7 @@ public class Tile : MonoBehaviour
                 && !TileType.Interior_Table.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_table");
             }
             //  *
             // *TT
@@ -163,7 +165,7 @@ public class Tile : MonoBehaviour
                 && TileType.Interior_Table.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-corner-rear");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_table-deep-corner-rear");
             }
             //  *
             // TT*
@@ -174,7 +176,7 @@ public class Tile : MonoBehaviour
                 && TileType.Interior_Table.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-corner-rear");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_table-deep-corner-rear");
                 sprite.flipX = true;
             }
             //  T
@@ -186,7 +188,7 @@ public class Tile : MonoBehaviour
                 && !TileType.Interior_Table.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-corner-front");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_table-deep-corner-front");
             }
             //  T
             // TT*
@@ -197,7 +199,7 @@ public class Tile : MonoBehaviour
                 && !TileType.Interior_Table.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-corner-front");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_table-deep-corner-front");
                 sprite.flipX = true;
             }
             //  *
@@ -209,7 +211,7 @@ public class Tile : MonoBehaviour
                 && TileType.Interior_Table.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-center-rear");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_table-deep-center-rear");
             }
             //  T
             // *TT
@@ -220,7 +222,7 @@ public class Tile : MonoBehaviour
                 && TileType.Interior_Table.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-center-rear");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_table-deep-center-rear");
                 newStructure.transform.Find("Mesh").localRotation = Quaternion.Euler(newStructure.transform.Find("Mesh").localEulerAngles + new Vector3(0, -90, 0));
             }
             //  T
@@ -232,7 +234,7 @@ public class Tile : MonoBehaviour
                 && TileType.Interior_Table.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-center-rear");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_table-deep-center-rear");
                 newStructure.transform.Find("Mesh").localRotation = Quaternion.Euler(newStructure.transform.Find("Mesh").localEulerAngles + new Vector3(0, 90, 0));
             }
             //  T
@@ -244,7 +246,7 @@ public class Tile : MonoBehaviour
                 && !TileType.Interior_Table.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-center-front");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_table-deep-center-front");
             }
             //  T
             // TTT
@@ -255,7 +257,7 @@ public class Tile : MonoBehaviour
                 && TileType.Interior_Table.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-center");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_table-deep-center");
             }
             //  *
             // *TT
@@ -266,7 +268,7 @@ public class Tile : MonoBehaviour
                 && !TileType.Interior_Table.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-corner-front");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_table-deep-corner-front");
             }
             //  *
             // TT*
@@ -277,7 +279,7 @@ public class Tile : MonoBehaviour
                 && !TileType.Interior_Table.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-corner-front");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_table-deep-corner-front");
                 sprite.flipX = true;
             }
             //  *
@@ -289,7 +291,7 @@ public class Tile : MonoBehaviour
                 && !TileType.Interior_Table.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_table-deep-center-front");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_table-deep-center-front");
             }
         }
         else if (TileType.Interior_Stool.Equals(tileType))
@@ -302,7 +304,7 @@ public class Tile : MonoBehaviour
             SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
             newStructure.transform.SetParent(transform);
 
-            sprite.sprite = Resources.Load<Sprite>("Textures/interior_stool");
+            sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_stool");
         }
         else if (TileType.Interior_Dresser.Equals(tileType))
         {
@@ -314,7 +316,7 @@ public class Tile : MonoBehaviour
             SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
             newStructure.transform.SetParent(transform);
 
-            sprite.sprite = Resources.Load<Sprite>("Textures/interior_dresser-bottom");
+            sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_dresser-bottom");
 
             GameObject newStructureTop = Instantiate(
                 Resources.Load<GameObject>("Prefabs/StructurePrefab"),
@@ -324,7 +326,7 @@ public class Tile : MonoBehaviour
             SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
             newStructureTop.transform.SetParent(transform);
 
-            spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_dresser-top");
+            spriteTop.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_dresser-top");
             spriteTop.sortingOrder = 2;
         }
         else if (TileType.Interior_Doormat.Equals(tileType))
@@ -349,14 +351,14 @@ public class Tile : MonoBehaviour
                 && TileType.Interior_Doormat.Equals(rightType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_doormat-edge");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_doormat-edge");
             }
             // ==* edge flipped
             else if (TileType.Interior_Doormat.Equals(leftType)
                 && !TileType.Interior_Doormat.Equals(rightType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_doormat-edge");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_doormat-edge");
                 sprite.flipX = true;
             }
             // === middle
@@ -364,7 +366,7 @@ public class Tile : MonoBehaviour
                 && TileType.Interior_Doormat.Equals(rightType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_doormat-center");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_doormat-center");
             }
         }
         else if (TileType.Interior_Door.Equals(tileType))
@@ -377,7 +379,7 @@ public class Tile : MonoBehaviour
             SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
             newStructure.transform.SetParent(transform);
 
-            sprite.sprite = Resources.Load<Sprite>("Textures/interior_door");
+            sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_door");
         }
         else if (TileType.Interior_Bed.Equals(tileType))
         {
@@ -403,7 +405,7 @@ public class Tile : MonoBehaviour
                 && !TileType.Interior_Bed.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_bed-bottom");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_bed-bottom");
             }
             // *
             // B
@@ -412,7 +414,7 @@ public class Tile : MonoBehaviour
                 && TileType.Interior_Bed.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/interior_bed-top");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_bed-top");
             }
         }
         else if (TileType.Interior_Cabinet.Equals(tileType))
@@ -425,7 +427,7 @@ public class Tile : MonoBehaviour
             SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
             newStructure.transform.SetParent(transform);
 
-            sprite.sprite = Resources.Load<Sprite>("Textures/interior_cabinet-base");
+            sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_cabinet-base");
 
             GameObject newStructureTop = Instantiate(
                 Resources.Load<GameObject>("Prefabs/StructurePrefab"),
@@ -435,7 +437,7 @@ public class Tile : MonoBehaviour
             SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
             newStructureTop.transform.SetParent(transform);
 
-            spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_cabinet-top");
+            spriteTop.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_cabinet-top");
             spriteTop.sortingOrder = 2;
         }
         else if (TileType.Interior_Sink.Equals(tileType))
@@ -448,7 +450,7 @@ public class Tile : MonoBehaviour
             SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
             newStructure.transform.SetParent(transform);
 
-            sprite.sprite = Resources.Load<Sprite>("Textures/interior_sink");
+            sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_sink");
 
             GameObject newStructureTop = Instantiate(
                 Resources.Load<GameObject>("Prefabs/StructurePrefab"),
@@ -458,7 +460,7 @@ public class Tile : MonoBehaviour
             SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
             newStructureTop.transform.SetParent(transform);
 
-            spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_cabinet-top");
+            spriteTop.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_cabinet-top");
             spriteTop.sortingOrder = 2;
         }
         else if (TileType.Interior_Oven.Equals(tileType))
@@ -471,7 +473,7 @@ public class Tile : MonoBehaviour
             SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
             newStructure.transform.SetParent(transform);
 
-            sprite.sprite = Resources.Load<Sprite>("Textures/interior_oven-base");
+            sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_oven-base");
 
             GameObject newStructureTop = Instantiate(
                 Resources.Load<GameObject>("Prefabs/StructurePrefab"),
@@ -481,7 +483,7 @@ public class Tile : MonoBehaviour
             SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
             newStructureTop.transform.SetParent(transform);
 
-            spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_oven-top");
+            spriteTop.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_oven-top");
             spriteTop.sortingOrder = 2;
         }
         else if (TileType.Interior_Fridge.Equals(tileType))
@@ -494,7 +496,7 @@ public class Tile : MonoBehaviour
             SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
             newStructure.transform.SetParent(transform);
 
-            sprite.sprite = Resources.Load<Sprite>("Textures/interior_fridge-base");
+            sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_fridge-base");
 
             GameObject newStructureTop = Instantiate(
                 Resources.Load<GameObject>("Prefabs/StructurePrefab"),
@@ -504,13 +506,14 @@ public class Tile : MonoBehaviour
             SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
             newStructureTop.transform.SetParent(transform);
 
-            spriteTop.sprite = Resources.Load<Sprite>("Textures/interior_fridge-top");
+            spriteTop.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_fridge-top");
             spriteTop.sortingOrder = 2;
         }
     }
 
     private void GenerateOverworldStructures()
     {
+        string colorVersion = GameManager.instance.GetColorVersion().ToString();
         if (tileType.Equals(TileType.Building_Roof))
         {
             GameObject newStructure = Instantiate(
@@ -543,7 +546,7 @@ public class Tile : MonoBehaviour
                 && !TileType.Building_Roof.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-corner");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_roof-corner");
             }
             //  *
             // ---
@@ -554,7 +557,7 @@ public class Tile : MonoBehaviour
                 && !TileType.Building_Roof.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-center");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_roof-center");
             }
             //  *
             // --*
@@ -565,7 +568,7 @@ public class Tile : MonoBehaviour
                 && !TileType.Building_Roof.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-corner");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_roof-corner");
                 sprite.flipX = true;
             }
             //  *
@@ -577,7 +580,7 @@ public class Tile : MonoBehaviour
                 && TileType.Building_Roof.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-deep-corner-rear");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_roof-deep-corner-rear");
             }
             //  *
             // ---
@@ -588,7 +591,7 @@ public class Tile : MonoBehaviour
                 && TileType.Building_Roof.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-deep-center-rear");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_roof-deep-center-rear");
             }
             //  *
             // --*
@@ -599,7 +602,7 @@ public class Tile : MonoBehaviour
                 && TileType.Building_Roof.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-deep-corner-rear");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_roof-deep-corner-rear");
                 sprite.flipX = true;
             }
             //  -
@@ -611,7 +614,7 @@ public class Tile : MonoBehaviour
                 && !TileType.Building_Roof.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-deep-corner-front");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_roof-deep-corner-front");
             }
             //  -
             // ---
@@ -622,7 +625,7 @@ public class Tile : MonoBehaviour
                 && !TileType.Building_Roof.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-deep-center-front");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_roof-deep-center-front");
             }
             //  -
             // --*
@@ -633,7 +636,7 @@ public class Tile : MonoBehaviour
                 && !TileType.Building_Roof.Equals(bottomType)
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_roof-deep-corner-front");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_roof-deep-corner-front");
                 sprite.flipX = true;
             }
         }
@@ -664,7 +667,7 @@ public class Tile : MonoBehaviour
                 && !(TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_ground-edge");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_ground-edge");
             }
             // B|B
             //  *  Bottom edge
@@ -673,7 +676,7 @@ public class Tile : MonoBehaviour
                 && !(TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_ground-center");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_ground-center");
             }
             // B|*
             //  *  Corner
@@ -682,7 +685,7 @@ public class Tile : MonoBehaviour
                 && !(TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_ground-edge");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_ground-edge");
                 sprite.flipX = true;
             }
             // *|B
@@ -692,7 +695,7 @@ public class Tile : MonoBehaviour
                 && (TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_wall-edge");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_wall-edge");
             }
             // B|B
             //  B  Center
@@ -701,7 +704,7 @@ public class Tile : MonoBehaviour
                 && (TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_wall-center");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_wall-center");
             }
             // B|*
             //  B  Edge
@@ -710,7 +713,7 @@ public class Tile : MonoBehaviour
                 && (TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_wall-edge");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_wall-edge");
                 sprite.flipX = true;
             }
         }
@@ -741,7 +744,7 @@ public class Tile : MonoBehaviour
                 && !(TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_window-ground-corner");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_window-ground-corner");
             }
 
             // B|B
@@ -751,7 +754,7 @@ public class Tile : MonoBehaviour
                 && !(TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_window-ground-center");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_window-ground-center");
             }
 
             // B|*
@@ -761,7 +764,7 @@ public class Tile : MonoBehaviour
                 && !(TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_window-ground-corner");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_window-ground-corner");
                 sprite.flipX = true;
             }
 
@@ -772,7 +775,7 @@ public class Tile : MonoBehaviour
                 && (TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_window-edge");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_window-edge");
             }
 
             // B|B
@@ -782,7 +785,7 @@ public class Tile : MonoBehaviour
                 && (TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_window-center");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_window-center");
             }
 
             // B|*
@@ -792,7 +795,7 @@ public class Tile : MonoBehaviour
                 && (TileType.Building_Wall.Equals(bottomType) || TileType.Building_Door.Equals(bottomType) || TileType.Building_Window.Equals(bottomType))
             )
             {
-                sprite.sprite = Resources.Load<Sprite>("Textures/building_window-edge");
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_window-edge");
                 sprite.flipX = true;
             }
         }
@@ -805,7 +808,7 @@ public class Tile : MonoBehaviour
             );
             SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
             newStructure.transform.SetParent(transform);
-            sprite.sprite = Resources.Load<Sprite>("Textures/building_door");
+            sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_door");
         }
     }
 }
