@@ -20,6 +20,8 @@
 ## Tile Legend
 ### Overworld
 - _ - Grass
+- ^ - Overgrown
+- P - Path
 - \- - Roof
 - \+ - Window
 - | - Wall

@@ -2,6 +2,8 @@ public enum TileType
 {
     None,
     Grass,
+    GrassOvergrown,
+    Path,
     Building_Roof,
     Building_Wall,
     Building_Window,

@@ -107,6 +107,14 @@ public class MapManager : MonoBehaviour
                         newType = TileType.Grass;
                     }
                 }
+                else if ('^'.Equals(mapChar)) // Overgrown grass
+                {
+                    newType = TileType.GrassOvergrown;
+                }
+                else if ('P'.Equals(mapChar)) // Path
+                {
+                    newType = TileType.Path;
+                }
                 else if ('-'.Equals(mapChar)) // Roof
                 {
                     newType = TileType.Building_Roof;

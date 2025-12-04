@@ -28,7 +28,7 @@ public class Tile : MonoBehaviour
         }
         else if (MapType.Overworld.Equals(MapManager.instance.GetMapType()) && !TileType.None.Equals(tileType))
         {
-            transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/grass");
+            transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_grass");
         }
     }
 
@@ -55,19 +55,6 @@ public class Tile : MonoBehaviour
             );
             SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
             newStructure.transform.SetParent(transform);
-
-            // sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_wall-base-full");
-
-            // GameObject newStructureTop = Instantiate(
-            //     Resources.Load<GameObject>("Prefabs/StructurePrefab"),
-            //     transform.position + new Vector3(0, 0, 1),
-            //     Quaternion.identity
-            // );
-            // SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
-            // newStructureTop.transform.SetParent(transform);
-
-            // spriteTop.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_wall-top-full");
-            // spriteTop.sortingOrder = 2;
 
             Vector2Int leftCoord = new Vector2Int(coords.x - 1, coords.y);
             Vector2Int rightCoord = new Vector2Int(coords.x + 1, coords.y);
@@ -514,7 +501,204 @@ public class Tile : MonoBehaviour
     private void GenerateOverworldStructures()
     {
         string colorVersion = GameManager.instance.GetColorVersion().ToString();
-        if (tileType.Equals(TileType.Building_Roof))
+        if (TileType.GrassOvergrown.Equals(tileType))
+        {
+            transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_overgrown");
+        }
+        else if (TileType.Path.Equals(tileType))
+        {
+            Vector2Int leftCoord = new Vector2Int(coords.x - 1, coords.y);
+            Vector2Int rightCoord = new Vector2Int(coords.x + 1, coords.y);
+            Vector2Int bottomCoord = new Vector2Int(coords.x, coords.y + 1);
+            Vector2Int topCoord = new Vector2Int(coords.x, coords.y - 1);
+            GameObject leftTileObject = MapManager.instance.GetTileAtCoords(leftCoord);
+            GameObject rightTileObject = MapManager.instance.GetTileAtCoords(rightCoord);
+            GameObject bottomTileObject = MapManager.instance.GetTileAtCoords(bottomCoord);
+            GameObject topTileObject = MapManager.instance.GetTileAtCoords(topCoord);
+            TileType leftType = leftTileObject == null ? TileType.None : leftTileObject.GetComponent<Tile>().GetTileType();
+            TileType rightType = rightTileObject == null ? TileType.None : rightTileObject.GetComponent<Tile>().GetTileType();
+            TileType bottomType = bottomTileObject == null ? TileType.None : bottomTileObject.GetComponent<Tile>().GetTileType();
+            TileType topType = topTileObject == null ? TileType.None : topTileObject.GetComponent<Tile>().GetTileType();
+
+            SpriteRenderer sprite = transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+
+            //  P
+            // PPP
+            //  P  Center
+            if (TileType.Path.Equals(topType)
+                && TileType.Path.Equals(leftType)
+                && TileType.Path.Equals(rightType)
+                && TileType.Path.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_path-center");
+            }
+            //  *
+            // *PP
+            //  P  Exterior corner
+            else if (!TileType.Path.Equals(topType)
+                && !TileType.Path.Equals(leftType)
+                && TileType.Path.Equals(rightType)
+                && TileType.Path.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_path-corner-exterior");
+            }
+            //  *
+            // PP*
+            //  P  Exterior corner 90
+            else if (!TileType.Path.Equals(topType)
+                && TileType.Path.Equals(leftType)
+                && !TileType.Path.Equals(rightType)
+                && TileType.Path.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_path-corner-exterior");
+                transform.Find("Mesh").localRotation = Quaternion.Euler(transform.Find("Mesh").localEulerAngles + new Vector3(0, 90, 0));
+            }
+            //  P
+            // PP*
+            //  *  Exterior corner 180
+            else if (TileType.Path.Equals(topType)
+                && TileType.Path.Equals(leftType)
+                && !TileType.Path.Equals(rightType)
+                && !TileType.Path.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_path-corner-exterior");
+                transform.Find("Mesh").localRotation = Quaternion.Euler(transform.Find("Mesh").localEulerAngles + new Vector3(0, 180, 0));
+            }
+            //  P
+            // *PP
+            //  *  Exterior corner 270
+            else if (TileType.Path.Equals(topType)
+                && !TileType.Path.Equals(leftType)
+                && TileType.Path.Equals(rightType)
+                && !TileType.Path.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_path-corner-exterior");
+                transform.Find("Mesh").localRotation = Quaternion.Euler(transform.Find("Mesh").localEulerAngles + new Vector3(0, 270, 0));
+            }
+            //  P
+            // *PP
+            //  P  Edge
+            else if (TileType.Path.Equals(topType)
+                && !TileType.Path.Equals(leftType)
+                && TileType.Path.Equals(rightType)
+                && TileType.Path.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_path-edge");
+            }
+            //  *
+            // PPP
+            //  P  Edge 90
+            else if (!TileType.Path.Equals(topType)
+                && TileType.Path.Equals(leftType)
+                && TileType.Path.Equals(rightType)
+                && TileType.Path.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_path-edge");
+                transform.Find("Mesh").localRotation = Quaternion.Euler(transform.Find("Mesh").localEulerAngles + new Vector3(0, 90, 0));
+            }
+            //  P
+            // PP*
+            //  P  Edge 180
+            else if (TileType.Path.Equals(topType)
+                && TileType.Path.Equals(leftType)
+                && !TileType.Path.Equals(rightType)
+                && TileType.Path.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_path-edge");
+                transform.Find("Mesh").localRotation = Quaternion.Euler(transform.Find("Mesh").localEulerAngles + new Vector3(0, 180, 0));
+            }
+            //  P
+            // PPP
+            //  *  Edge 270
+            else if (TileType.Path.Equals(topType)
+                && TileType.Path.Equals(leftType)
+                && TileType.Path.Equals(rightType)
+                && !TileType.Path.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_path-edge");
+                transform.Find("Mesh").localRotation = Quaternion.Euler(transform.Find("Mesh").localEulerAngles + new Vector3(0, 270, 0));
+            }
+            //  P
+            // *P*
+            //  P  Narrow
+            else if (TileType.Path.Equals(topType)
+                && !TileType.Path.Equals(leftType)
+                && !TileType.Path.Equals(rightType)
+                && TileType.Path.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_path-narrow-straight");
+            }
+            //  *
+            // PPP
+            //  *  Narrow 90
+            else if (!TileType.Path.Equals(topType)
+                && TileType.Path.Equals(leftType)
+                && TileType.Path.Equals(rightType)
+                && !TileType.Path.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_path-narrow-straight");
+                transform.Find("Mesh").localRotation = Quaternion.Euler(transform.Find("Mesh").localEulerAngles + new Vector3(0, 90, 0));
+            }
+            //  *
+            // *P*
+            //  P  Narrow end
+            else if (!TileType.Path.Equals(topType)
+                && !TileType.Path.Equals(leftType)
+                && !TileType.Path.Equals(rightType)
+                && TileType.Path.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_path-narrow-end");
+            }
+            //  *
+            // PP*
+            //  *  Narrow end 90
+            else if (!TileType.Path.Equals(topType)
+                && TileType.Path.Equals(leftType)
+                && !TileType.Path.Equals(rightType)
+                && !TileType.Path.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_path-narrow-end");
+                transform.Find("Mesh").localRotation = Quaternion.Euler(transform.Find("Mesh").localEulerAngles + new Vector3(0, 90, 0));
+            }
+            //  P
+            // *P*
+            //  *  Narrow end 180
+            else if (TileType.Path.Equals(topType)
+                && !TileType.Path.Equals(leftType)
+                && !TileType.Path.Equals(rightType)
+                && !TileType.Path.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_path-narrow-end");
+                transform.Find("Mesh").localRotation = Quaternion.Euler(transform.Find("Mesh").localEulerAngles + new Vector3(0, 180, 0));
+            }
+            //  *
+            // *PP
+            //  *  Narrow end 270
+            else if (!TileType.Path.Equals(topType)
+                && !TileType.Path.Equals(leftType)
+                && TileType.Path.Equals(rightType)
+                && !TileType.Path.Equals(bottomType)
+            )
+            {
+                sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_path-narrow-end");
+                transform.Find("Mesh").localRotation = Quaternion.Euler(transform.Find("Mesh").localEulerAngles + new Vector3(0, 270, 0));
+            }
+        }
+        else if (tileType.Equals(TileType.Building_Roof))
         {
             GameObject newStructure = Instantiate(
                 Resources.Load<GameObject>("Prefabs/StructurePrefab"),
