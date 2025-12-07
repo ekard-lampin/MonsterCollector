@@ -22,6 +22,7 @@
 - _ - Grass
 - ^ - Overgrown
 - P - Path
+- X - Encounter Grass
 - \- - Roof
 - \+ - Window
 - | - Wall

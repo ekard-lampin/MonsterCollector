@@ -111,6 +111,10 @@ public class MapManager : MonoBehaviour
                 {
                     newType = TileType.GrassOvergrown;
                 }
+                else if ('X'.Equals(mapChar)) // Encounter grass
+                {
+                    newType = TileType.EncounterGrass;
+                }
                 else if ('P'.Equals(mapChar)) // Path
                 {
                     newType = TileType.Path;

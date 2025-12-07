@@ -505,6 +505,34 @@ public class Tile : MonoBehaviour
         {
             transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_overgrown");
         }
+        else if (TileType.EncounterGrass.Equals(tileType))
+        {
+            GameObject newStructure = Instantiate(
+                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                transform.position,
+                Quaternion.identity
+            );
+            SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            newStructure.transform.SetParent(transform);
+            sprite.sortingLayerName = "Entities";
+            // sprite.sortingOrder = Mathf.FloorToInt((GetCoords().y + 1) * 10);
+            sprite.sortingOrder = Mathf.FloorToInt((Mathf.Abs(transform.position.z) + 0.25f) * 10);
+
+            sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/overgrowth_bottom");
+
+            GameObject newStructureTop = Instantiate(
+                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                transform.position,
+                Quaternion.identity
+            );
+            SpriteRenderer spriteTop = newStructureTop.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            newStructureTop.transform.SetParent(transform);
+
+            spriteTop.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/overgrowth_top");
+            spriteTop.sortingLayerName = "Entities";
+            // spriteTop.sortingOrder = Mathf.FloorToInt(GetCoords().y * 10);
+            spriteTop.sortingOrder = Mathf.FloorToInt((Mathf.Abs(transform.position.z) - 0.25f) * 10);
+        }
         else if (TileType.Path.Equals(tileType))
         {
             Vector2Int leftCoord = new Vector2Int(coords.x - 1, coords.y);

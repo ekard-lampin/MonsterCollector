@@ -16,6 +16,7 @@ public class PlayerMovementController : MonoBehaviour
     void Update()
     {
         HandleMovement();
+        HandleSpriteSortingOrder();
     }
 
     private void HandleMovement()
@@ -70,7 +71,14 @@ public class PlayerMovementController : MonoBehaviour
         if (TileType.Interior_Stool.Equals(tileType)) { return true; }
         if (TileType.Interior_Doormat.Equals(tileType)) { return true; }
         if (TileType.Path.Equals(tileType)) { return true; }
+        if (TileType.EncounterGrass.Equals(tileType)) { return true; }
 
         return false;
+    }
+
+    private void HandleSpriteSortingOrder()
+    {
+        // transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>().sortingOrder = Mathf.FloorToInt((coords.y + 0.5f) * 10);
+        transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>().sortingOrder = Mathf.FloorToInt(Mathf.Abs(transform.position.z) * 10);
     }
 }

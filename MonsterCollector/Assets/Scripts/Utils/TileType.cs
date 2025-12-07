@@ -3,6 +3,7 @@ public enum TileType
     None,
     Grass,
     GrassOvergrown,
+    EncounterGrass,
     Path,
     Building_Roof,
     Building_Wall,
