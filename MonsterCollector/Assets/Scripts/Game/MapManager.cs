@@ -27,9 +27,9 @@ public class MapManager : MonoBehaviour
 
     void Start()
     {
-        // LoadMap("Overworld_0", Vector2Int.zero);
+        LoadMap("Overworld_0", Vector2Int.zero);
         // LoadMap("Building_0", Vector2Int.zero);
-        LoadMap("Building_1", Vector2Int.zero);
+        // LoadMap("Building_1", Vector2Int.zero);
     }
 
     public void LoadMap(string mapName, Vector2Int playerLocation)
@@ -39,7 +39,7 @@ public class MapManager : MonoBehaviour
         portalLibrary.Clear();
         
         TextAsset mapText = Resources.Load<TextAsset>("Maps/" + mapName);
-        string[] mapLines = mapText.text.Split('\n');
+        string[] mapLines = mapText.text.Replace(" ", "").Split('\n');
         
         // Get map size.
         string mapSizeText = mapLines[0];
@@ -105,6 +105,10 @@ public class MapManager : MonoBehaviour
                     else if (MapType.Overworld.Equals(GetMapType()))
                     {
                         newType = TileType.Grass;
+                    } 
+                    else if (MapType.Industrial.Equals(GetMapType()))
+                    {
+                        newType = TileType.Industrial_Floor;
                     }
                 }
                 else if ('^'.Equals(mapChar)) // Overgrown grass
@@ -125,7 +129,7 @@ public class MapManager : MonoBehaviour
                 }
                 else if ('|'.Equals(mapChar)) // Wall
                 {
-                    if (MapType.Residential.Equals(GetMapType()))
+                    if (MapType.Residential.Equals(GetMapType()) || MapType.Industrial.Equals(GetMapType()))
                     {
                         newType = TileType.Interior_Wall;
                     }
@@ -136,7 +140,7 @@ public class MapManager : MonoBehaviour
                 }
                 else if ('O'.Equals(mapChar)) // Door
                 {
-                    if (MapType.Residential.Equals(GetMapType()))
+                    if (MapType.Residential.Equals(GetMapType()) || MapType.Industrial.Equals(GetMapType()))
                     {
                         newType = TileType.Interior_Door;
                     }
@@ -147,7 +151,7 @@ public class MapManager : MonoBehaviour
                 }
                 else if ('+'.Equals(mapChar)) // Window
                 {
-                    if (MapType.Residential.Equals(GetMapType()))
+                    if (MapType.Residential.Equals(GetMapType()) || MapType.Industrial.Equals(GetMapType()))
                     {
                         newType = TileType.Interior_Oven;
                     }
@@ -187,6 +191,10 @@ public class MapManager : MonoBehaviour
                 else if ('F'.Equals(mapChar)) // Fridge
                 {
                     newType = TileType.Interior_Fridge;
+                }
+                else if ('&'.Equals(mapChar)) // Bush
+                {
+                    newType = TileType.Overworld_Bush;
                 }
                 newTileObject.GetComponent<Tile>().SetTileType(newType);
 

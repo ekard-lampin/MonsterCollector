@@ -5,6 +5,7 @@ public enum TileType
     GrassOvergrown,
     EncounterGrass,
     Path,
+    Overworld_Bush,
     Building_Roof,
     Building_Wall,
     Building_Window,
@@ -20,5 +21,6 @@ public enum TileType
     Interior_Cabinet,
     Interior_Sink,
     Interior_Oven,
-    Interior_Fridge
+    Interior_Fridge,
+    Industrial_Floor
 }

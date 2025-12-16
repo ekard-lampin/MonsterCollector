@@ -30,10 +30,14 @@ public class Tile : MonoBehaviour
         {
             transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/ground_grass");
         }
+        else if (MapType.Industrial.Equals(MapManager.instance.GetMapType()) && !TileType.None.Equals(tileType))
+        {
+            transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/interior_tile");
+        }
     }
 
     public void GenerateStructure() {
-        if (MapType.Residential.Equals(MapManager.instance.GetMapType()))
+        if (MapType.Residential.Equals(MapManager.instance.GetMapType()) || MapType.Industrial.Equals(MapManager.instance.GetMapType()))
         {
             GenerateBuildingStructures();
         }
@@ -1021,6 +1025,17 @@ public class Tile : MonoBehaviour
             SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
             newStructure.transform.SetParent(transform);
             sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/building_door");
+        }
+        else if (tileType.Equals(TileType.Overworld_Bush))
+        {
+            GameObject newStructure = Instantiate(
+                Resources.Load<GameObject>("Prefabs/StructurePrefab"),
+                transform.position + new Vector3(0, 0, 0.25f),
+                Quaternion.identity
+            );
+            SpriteRenderer sprite = newStructure.transform.Find("Mesh").Find("Sprite").gameObject.GetComponent<SpriteRenderer>();
+            newStructure.transform.SetParent(transform);
+            sprite.sprite = Resources.Load<Sprite>("Textures/" + colorVersion + "/overworld_bush");
         }
     }
 }
